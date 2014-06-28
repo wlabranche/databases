@@ -14,27 +14,30 @@ var http = require('http');
  * dbConnection.query() method.
  * See https://github.com/felixge/node-mysql for more details about
  * using this module.*/
-module.exports.db = function(query, res){
-
-  console.log(res);
+module.exports.db = function(query, res, isPost){
 
   var dbConnection = mysql.createConnection({
     user: "root",
-    password: "password",
+    password: "",
     database: "chat"
   });
 
   dbConnection.connect();
   var port = 3306;
 
-  console.log('db server running on port: ' + port);
-
+  var thing;
   dbConnection.query(query, function(err, rows){
     if (err){throw err;}
-    console.log(rows);
+    thing = rows;
   });
 
 
   dbConnection.end();
-  res.end();
+
+  if (isPost){
+    // send back data that client expects
+    res.end();
+  }
+
+  res.end(thing);
 };

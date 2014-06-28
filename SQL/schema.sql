@@ -8,7 +8,7 @@ create table messages (
   username varchar(10),
   content varchar(140),
   roomname varchar(10),
-  createdAt date
+  createdAt datetime
 );
 
 

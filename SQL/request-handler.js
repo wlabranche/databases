@@ -1,5 +1,5 @@
 var url = require('url');
-// var fs = require('fs');
+var fs = require('fs');
 var mysql = require('mysql');
 var http = require('http');
 var db = require('./db.js').db;
@@ -18,10 +18,9 @@ module.exports.handler = function(request, response) {
 
   var statusCode = statusCodes[request.method];
   var headers = defaultCorsHeaders;
-  headers['Content-Type'] = "text/plain";
-
+  headers['Content-Type'] = "text/html";
+  response.writeHead(statusCode, headers);
   if (routes[parsedUrl.pathname]) {
-    response.writeHead(statusCode, headers);
 
     if (request.method === 'OPTIONS') {
       response.end();
@@ -29,38 +28,35 @@ module.exports.handler = function(request, response) {
 
     if (request.method === 'POST') {
 
+
+
+
+      // console.log('in post');
+      // var date = '2014-06-28';
+      // var test = 'insert into messages (objectId, userId, username, content, roomname, createdAt) values (1, 2, "me", "test words", "here", NOW());';
+      // db(test, response, request.method);
       request.on('data', function(data){
         data = JSON.parse(data);
-        data['createdAt'] = new Date();
 
-        //
-        // fs.readFile('./server/messages.json', function(err, storedData){
-        //   if(err){
-        //     throw err;
-        //   }
-        //   storedData = JSON.parse(storedData);
-        //   data['objectId'] = storedData.results.length;
-        //   storedData.results.push(data);
+        console.log(data);
 
-        //   //
-        //   // fs.writeFile('./server/messages.json', JSON.stringify(storedData), function(err){
-        //   //   if (err){throw err;}
-        //   // });
-        //   response.end(JSON.stringify({objectId: data['objectId'], createdAt: data['createdAt']}));
-        // });
+
+        var full = 'insert into messages (objectId, userId, username, content, createdAt) values (1, 2, "'+ data.username + '", "' + data.text + '", NOW() );';
+        db(full, response, request.method);
+
+        // this should respond with created at and id (write it in the db)
       });
+
     }
 
     if (request.method === 'GET') {
-      //
-      // fs.readFile('./server/messages.json', function(err, data){
-      //   if (err){console.log(err , data);}
-      //   response.end(data);
-      // });
+
+
+      // response.end();
       var table = "FROM messages";
       var query = "SELECT *";
-      console.log(response);
-      db(query + ' ' + table, response);
+
+      db(query + ' ' + table + ';', response);
 
     }
   } else {
@@ -82,7 +78,9 @@ var routes = {
   "/classes/messages/": true,
   "/classes/messages": true,
   "/classes/room1": true,
-  "/classes/room": true
+  "/classes/room": true,
+  "/scripts/app.js": true,
+  "/scripts/config/js": true
 };
 
 var count = 0;
