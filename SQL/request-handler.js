@@ -2,6 +2,7 @@ var url = require('url');
 // var fs = require('fs');
 var mysql = require('mysql');
 var http = require('http');
+var db = require('./db.js').db;
 
 module.exports.handler = function(request, response) {
 
@@ -16,7 +17,6 @@ module.exports.handler = function(request, response) {
   };
 
   var statusCode = statusCodes[request.method];
-
   var headers = defaultCorsHeaders;
   headers['Content-Type'] = "text/plain";
 
@@ -34,32 +34,33 @@ module.exports.handler = function(request, response) {
         data['createdAt'] = new Date();
 
         //
-        fs.readFile('./server/messages.json', function(err, storedData){
-          if(err){
-            throw err;
-          }
-          storedData = JSON.parse(storedData);
-          data['objectId'] = storedData.results.length;
-          storedData.results.push(data);
+        // fs.readFile('./server/messages.json', function(err, storedData){
+        //   if(err){
+        //     throw err;
+        //   }
+        //   storedData = JSON.parse(storedData);
+        //   data['objectId'] = storedData.results.length;
+        //   storedData.results.push(data);
 
-          //
-          fs.writeFile('./server/messages.json', JSON.stringify(storedData), function(err){
-            if (err){throw err;}
-          });
-          response.end(JSON.stringify({objectId: data['objectId'], createdAt: data['createdAt']}));
-        });
+        //   //
+        //   // fs.writeFile('./server/messages.json', JSON.stringify(storedData), function(err){
+        //   //   if (err){throw err;}
+        //   // });
+        //   response.end(JSON.stringify({objectId: data['objectId'], createdAt: data['createdAt']}));
+        // });
       });
     }
 
     if (request.method === 'GET') {
       //
-      fs.readFile('./server/messages.json', function(err, data){
-        if (err){console.log(err , data);}
-        response.end(data);
-      });
-      http.get('http://127.0.0.1:3306', function(res){
-
-      });
+      // fs.readFile('./server/messages.json', function(err, data){
+      //   if (err){console.log(err , data);}
+      //   response.end(data);
+      // });
+      var table = "FROM messages";
+      var query = "SELECT *";
+      console.log(response);
+      db(query + ' ' + table, response);
 
     }
   } else {
