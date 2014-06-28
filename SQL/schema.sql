@@ -1,12 +1,26 @@
-CREATE DATABASE chat;
+create database chat;
 
-USE chat;
+use chat;
 
-CREATE TABLE messages (
-  /* Describe your table here.*/
+create table messages (
+  objectId int(4),
+  userId int(4),
+  username varchar(10),
+  content varchar(140),
+  roomname varchar(10),
+  createdAt date
 );
 
-/* Create other tables and define schemas for them here! */
+
+create table users (
+  userId int(4),
+  username varchar(10)
+);
+
+create table rooms (
+  roomId int(4),
+  roomname varchar(10)
+);
 
 
 
